@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 // name, email, photo, password, pas confirm
 const userSchema = new mongoose.Schema({
@@ -34,4 +35,14 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+userSchema.pre('save', async function (next) {
+  //Only runs this function if the password was actually modified
+  if (!this.isModified('password')) return next();
+  // encrypting password
+  this.password = await bcrypt.hash(this.password, 12);
+  //Deleting the passwordConfirm field so it's not saved in the db, it's a required input not necessary for the db
+  this.passwordConfirm = undefined;
+  //Calls the next middleware
+  next();
+});
 const User = mongoose.model('User', userSchema);
