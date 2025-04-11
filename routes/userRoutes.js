@@ -5,6 +5,7 @@ const authController = require('./../controllers/authController');
 const router = express.Router();
 // this doesn't follow the REST philosophy but it's ok since it's a special case
 router.post('/signup', authController.signup);
+router.post('/login', authController.login);
 
 router
   .route('/')
